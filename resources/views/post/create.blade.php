@@ -4,25 +4,25 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Buat Post Baru</div>
+                <div class="card bg-light border border-dark p-5 rounded-lg shadow-md">
+                    <div class="card-header bg-dark text-light p-3 rounded-lg">Buat Post Baru</div>
                     <div class="card-body">
                         <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-group">
-                                <label for="title">Judul:</label>
-                                <input type="text" name="title" id="title" class="form-control" required>
+                            <div class="form-group mb-3">
+                                <label for="title" class="text-dark">Judul:</label>
+                                <input type="text" name="title" id="title" class="form-control bg-light border border-dark p-3 rounded-lg text-dark" required>
                             </div>
-                            <div class="form-group">
-                                <label for="body">Isi:</label>
-                                <textarea name="body" id="body" class="form-control" required></textarea>
+                            <div class="form-group mb-3">
+                                <label for="body" class="text-dark">Isi:</label>
+                                <textarea name="body" id="body" class="form-control bg-light border border-dark p-3 rounded-lg text-dark" required></textarea>
                             </div>
-                            <div class="form-group">
-                                <label for="media">Unggah Media:</label>
-                                <input type="file" name="media[]" id="media" accept="image/*" multiple>
-                                <div id="media-preview" class="mt-3 d-grid gap-2 grid-cols-2 grid-rows-2"></div>
+                            <div class="form-group mb-3">
+                                <label for="media" class="text-dark">Unggah Media:</label>
+                                <input type="file" name="media[]" id="media" accept="image/*" multiple class="form-control bg-light border border-dark p-3 rounded-lg text-dark">
+                                <div id="media-preview" class="mt-3 grid grid-cols-2 gap-2"></div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Buat Post</button>
+                            <button type="submit" class="btn btn-primary bg-dark text-light p-3 rounded-lg border-0">Buat Post</button>
                         </form>
                     </div>
                 </div>
@@ -49,14 +49,8 @@
                         const img = document.createElement('img');
                         img.src = fileUrl;
                         img.alt = file.name;
-                        img.style = 'max-width: 400px; height: auto;';
-                        img.className = 'img-thumbnail img-fluid media-preview-item';
+                        img.classList.add('img-thumbnail', 'img-fluid', 'media-preview-item');
                         mediaPreview.appendChild(img);
-
-                        const fileInfo = document.createElement('div');
-                        fileInfo.textContent = `${file.name} (${file.size} bytes)`;
-                        fileInfo.className = 'media-preview-info';
-                        mediaPreview.appendChild(fileInfo);
                     }
                 };
 
@@ -74,20 +68,18 @@
 
         .media-preview-item {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 3px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .media-preview-info {
-            font-size: 12px;
-            color: #666;
-            margin-top: 10px;
+            height: 60px;
+            width: auto;
         }
 
         .media-preview-item:hover {
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            height: 70px;
+            width: auto;
         }
     </style>
 @endsection

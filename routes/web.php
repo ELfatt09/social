@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Auth::routes();
@@ -24,7 +24,8 @@ Route::middleware(['auth'])->group(function () {
     //post
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post/create', [PostController::class, 'create']);
-    Route::post('/post', [PostController::class, 'store'])->name('post.store'); // <--- Added name()
+    Route::post('/post', [PostController::class, 'store'])->name('post.store');
+    Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show'); // <--- Added name()
 });
 
 Route::middleware(['guest'])->group(function () {

@@ -72,10 +72,15 @@ class PostController extends Controller
     /**
      * Display the specified post.
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        // Tampilkan post dan media terkait
-        return view('post.show', compact('post'));
+        // Mengambil post berdasarkan ID
+        $post = Post::where('id', $id)->firstOrFail();
+
+        // Atau menggunakan findOrFail langsung jika hanya berdasarkan ID
+        // $post = Post::findOrFail($id);
+
+        return view('posts.show', compact('post'));
     }
 
     /**
