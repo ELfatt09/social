@@ -53,7 +53,7 @@
             <form class="d-inline"href="{{ url('/post/delete') }}" method="post">
                 @csrf
                 @method('DELETE')
-                <input type="hidden" value="{{ $post->id }}">
+                <input type="hidden" name="post" value="{{ $post->id }}">
                 <button type="submit" class="btn btn-danger p-1">Delete</button>
             </form>
             @endif

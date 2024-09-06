@@ -136,20 +136,48 @@ class PostController extends Controller
     /**
      * Remove the specified post from storage.
      */
-    public function destroy(Post $post)
-    {
-        if ($post->user_id !== Auth::id()) {
-            abort(403, 'You are not authorized to delete this post');
-        }
-        // Hapus file media jika ada
-        if ($post->media) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $post->media->file_path));
-            $post->media()->delete();
-        }
+    public function destroy(Request $request)
+{
+    $postId = $request->validate([
+        'post' => 'required|integer|exists:posts,id',
+    ])['post'];
 
-        // Hapus post
-        $post->delete();
+    $post = Post::with('Author', 'media')->findOrFail($postId);
 
-        return redirect()->route('posts.index')->with('warning', 'Post deleted successfully');
+    if (!$this->canDeletePost($post)) {
+        abort(403, 'You are not authorized to delete this post');
     }
+
+    $this->deletePostMedia($post);
+    $post->delete();
+
+    return redirect()->route('post.index')->with('warning', 'Post deleted successfully');
+}
+
+    /**
+     * Determines if the current authenticated user can delete the given post.
+     *
+     * @param Post $post The post to check deletion permissions for.
+     * @return bool True if the user can delete the post, false otherwise.
+     */
+private function canDeletePost(Post $post): bool
+{
+    return $post->user_id === Auth::id();
+}
+
+/**
+ * Deletes the media associated with a given post.
+ *
+ * @param Post $post The post whose media is to be deleted.
+ * @return void
+ */
+private function deletePostMedia(Post $post): void
+{
+    if ($post->media) {
+        foreach ($post->media as $media) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $media->file_path));
+        }
+        $post->media()->delete();
+    }
+}
 }

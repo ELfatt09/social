@@ -67,14 +67,6 @@
                                 </div>
                             </div>
                         </form>
-
-                        <!-- Display the user's posts -->
-                        <h2>My Posts</h2>
-                        <ul>
-                            @foreach(Auth::user()->posts as $post)
-                                <li>{{ $post->title }}</li>
-                            @endforeach
-                        </ul>
                     </div>
                 </div>
             </div>
