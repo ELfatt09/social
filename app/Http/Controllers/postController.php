@@ -15,7 +15,7 @@ class PostController extends Controller
     public function index()
     {
         // Mengambil semua post beserta media dan author terkait
-        $posts = Post::with('media', 'author')->latest()->get();
+        $posts = Post::with('media', 'author')->latest()->paginate(10);
 
         return view('post.index', ['posts' => $posts,]);
     }
@@ -74,13 +74,11 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        // Mengambil post berdasarkan ID
-        $post = Post::where('id', $id)->firstOrFail();
+        // Ambil post berdasarkan ID
+        $post = Post::with('author', 'media')->findOrFail($id);
 
-        // Atau menggunakan findOrFail langsung jika hanya berdasarkan ID
-        // $post = Post::findOrFail($id);
-
-        return view('posts.show', compact('post'));
+        // Kirim data ke view
+        return view('post.show', compact('post'));
     }
 
     /**

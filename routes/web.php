@@ -25,7 +25,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post/create', [PostController::class, 'create']);
     Route::post('/post', [PostController::class, 'store'])->name('post.store');
-    Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show'); // <--- Added name()
+    Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
+    Route::delete('/post', [PostController::class, 'delete'])->name('post.delete'); // <--- Added name()
 });
 
 Route::middleware(['guest'])->group(function () {
