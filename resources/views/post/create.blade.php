@@ -15,11 +15,11 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="body" class="text-dark">Isi:</label>
-                                <textarea name="body" id="body" class="form-control bg-light border border-dark p-3 rounded-lg text-dark" required></textarea>
+                                <textarea name="body" id="body" class="form-control bg-light border border-dark p-3 rounded-lg text-dark"></textarea>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="media" class="text-dark">Unggah Media:</label>
-                                <input type="file" name="media[]" id="media" accept="image/*" multiple class="form-control bg-light border border-dark p-3 rounded-lg text-dark">
+                                <input type="file" name="media[]" id="media" accept="image/*,video/*" multiple class="form-control bg-light border border-dark p-3 rounded-lg text-dark">
                                 <div id="media-preview" class="mt-3 grid grid-cols-2 gap-2"></div>
                             </div>
                             <button type="submit" class="btn btn-primary bg-dark text-light p-3 rounded-lg border-0">Buat Post</button>
@@ -31,32 +31,36 @@
     </div>
 
     <script>
-        const mediaInput = document.getElementById('media');
-        const mediaPreview = document.getElementById('media-preview');
+       mediaInput.addEventListener('change', (e) => {
+    const files = Array.from(mediaInput.files);
+    mediaPreview.innerHTML = '';
 
-        mediaInput.addEventListener('change', (e) => {
-            const files = Array.from(mediaInput.files);
-            mediaPreview.innerHTML = '';
+    files.forEach((file) => {
+        const reader = new FileReader();
 
-            files.forEach((file) => {
-                const reader = new FileReader();
+        reader.onload = (e) => {
+            const fileType = file.type;
+            const fileUrl = e.target.result;
 
-                reader.onload = (e) => {
-                    const fileType = file.type;
-                    const fileUrl = e.target.result;
+            if (fileType.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = fileUrl;
+                img.alt = file.name;
+                img.classList.add('img-thumbnail', 'img-fluid', 'media-preview-item');
+                mediaPreview.appendChild(img);
+            } else if (fileType.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.src = fileUrl;
+                video.alt = file.name;
+                video.classList.add('media-preview-item');
+                video.controls = true;
+                mediaPreview.appendChild(video);
+            }
+        };
 
-                    if (fileType.startsWith('image/')) {
-                        const img = document.createElement('img');
-                        img.src = fileUrl;
-                        img.alt = file.name;
-                        img.classList.add('img-thumbnail', 'img-fluid', 'media-preview-item');
-                        mediaPreview.appendChild(img);
-                    }
-                };
-
-                reader.readAsDataURL(file);
-            });
-        });
+        reader.readAsDataURL(file);
+    });
+});
     </script>
 
     <style>

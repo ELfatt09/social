@@ -36,35 +36,35 @@ class PostController extends Controller
         // Validasi data input dari form
         $request->validate([
             'title' => 'required|string|max:255',
-            'body' => 'required|string',
+            'body' => 'nullable|string',
             'media' => 'nullable|array', // Max 20MB
-            'media.*' => 'nullable|file|mimetypes:image/jpeg,image/png,image/gif'
+            'media.*' => 'nullable|file|mimetypes:image/jpeg,image/png,image/gif,video/mp4,video/avi,video/mpeg,video/quicktime|max:102400'
         ]);
 
-        // Buat post baru
+         // Buat post baru
         $post = Post::create([
             'title' => $request->title,
             'body' => $request->body,
             'user_id' => Auth::id(), // or auth()->user()->id
         ])->fresh();
 
-        // Cek apakah ada file media yang diunggah
-        if ($request->hasFile('media')) {
-            foreach ($request->file('media') as $media) {      
-                $fileName = time() . '_' . $media->getClientOriginalName();
-                $filePath = $media->storeAs('uploads', $fileName, 'public');
-        
-                // Simpan informasi media ke database
-                Media::create([
-                    'post_id' => $post->id,
-                    'file_type' => $media->getClientOriginalExtension(),
-                    'file_name' => $fileName,
-                    'file_path' => '/storage/' . $filePath,
-                    'mime_type' => $media->getMimeType(),
-                    'file_size' => $media->getSize(),
-                ]);
-            }
-        }
+// // Cek apakah ada file media yang diunggah
+if ($request->hasFile('media')) {
+    foreach ($request->file('media') as $media) {      
+        $fileName = time() . '_' . $media->getClientOriginalName();
+        $filePath = $media->storeAs('uploads', $fileName, 'public');
+
+        // Simpan informasi media ke database
+        Media::create([
+            'post_id' => $post->id,
+            'file_type' => $media->getClientOriginalExtension(),
+            'file_name' => $fileName,
+            'file_path' => '/storage/' . $filePath,
+            'mime_type' => $media->getMimeType(),
+            'file_size' => $media->getSize(),
+        ]);
+    }
+}
 
         return redirect()->route('post.index')->with('success', 'Post created successfully');
     }

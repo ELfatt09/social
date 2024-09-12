@@ -7,64 +7,58 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Update Profile</div>
+                    <div class="card-header bg-light">
+                        <h2>{{ __('Edit Profile') }}</h2>
+                    </div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('profile.update') }}">
+                        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                             @csrf
                             @method('patch')
-                            <div class="form-group row">
-                                <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
-                                <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ Auth::user()->name }}" required>
-
-                                    @error('name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                            <!-- Profile Picture Section -->
+                            <div class="mb-4">
+                                <h5>{{ __('Profile Picture') }}</h5>
+                                <div class="profile-picture">
+                                    <img src="{{ Auth::user()->pfp ? asset(Auth::user()->pfp->file_path) : asset('storage/uploads/OIP (1).jpg') }}" 
+                                         class="rounded-circle" 
+                                         style="width: 120px; height: 120px;" 
+                                         alt="User Profile Picture">
+                                </div>
+                                <div class="upload-button">
+                                    <input id="pfp" type="file" class="form-control @error('pfp') is-invalid @enderror" name="pfp">
+                                    <label for="pfp" class="btn btn-primary bg-dark text-light">{{ __('Upload New Profile Picture') }}</label>
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                            <!-- Form Fields Section -->
+                            <div class="form-fields-section">
+                                @foreach(['name', 'email'] as $field)
+                                    <div class="form-group row">
+                                        <label for="{{ $field }}" class="col-md-4 col-form-label text-md-right">{{ __("{$field}") }}</label>
 
-                                <div class="col-md-6">
-                                    <input id="email" type="email" class="form-control" name="email" value="{{ Auth::user()->email }}" readonly>
+                                        <div class="col-md-6">
+                                            @if($field === 'email')
+                                                <input id="{{ $field }}" type="email" class="form-control" name="{{ $field }}" value="{{ Auth::user()->{$field} }}" readonly>
+                                            @else
+                                                <input id="{{ $field }}" type="text" class="form-control @error($field) is-invalid @enderror" name="{{ $field }}" value="{{ Auth::user()->{$field} }}" required>
+                                            @endif
 
-                                    <!-- Remove the error message and make the email field readonly -->
-                                </div>
+                                            @error($field)
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
 
-                            <div class="form-group row">
-                                <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-
-                                    @error('password')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('Update Profile') }}
-                                    </button>
-                                </div>
+                            <!-- Submit Button Section -->
+                            <div class="submit-button-section">
+                                <button type="submit" class="btn btn-primary bg-dark text-light">
+                                    {{ __('Update Profile') }}
+                                </button>
                             </div>
                         </form>
                     </div>

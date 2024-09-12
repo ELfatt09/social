@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->longText('body');
+            $table->longText('body')->nullable();
             $table->timestamps();
         });
         Schema::create('comments', function (Blueprint $table) {

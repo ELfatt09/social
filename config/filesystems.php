@@ -50,6 +50,10 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
+            'mime_types' => [
+                'video/mp4', 'video/avi', 'video/mov', // Allowed video MIME types
+                'image/jpeg', 'image/png', 'image/gif', 'image/bmp' // Add allowed image MIME types
+            ],
         ],
 
         's3' => [
