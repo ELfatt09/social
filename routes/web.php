@@ -19,8 +19,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::middleware(['auth'])->group(function () {
     //profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');
-    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     //post
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post/create', [PostController::class, 'create']);
