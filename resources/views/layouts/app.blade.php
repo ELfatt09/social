@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ $pageName ?? config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <style>
@@ -72,7 +70,6 @@
             .content {
                 margin-left: 0;
             }
-
         }
     </style>
     @yield('style')
@@ -94,7 +91,7 @@
                                 <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                             </li>
                         @else
-                            <li class="nav-item dropdown mx-3">
+                            <li class="nav-item dropdown me-3">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                     <img src="{{ Auth::user()->pfp ? asset(Auth::user()->pfp->file_path) : asset('storage/uploads/OIP (1).jpg') }}" 
@@ -103,7 +100,8 @@
                                     alt="User Profile Picture">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">Profil</a>
+                                    <a class="dropdown-item" href="{{ route('profile.show', Auth::id()) }}">Profil</a>
+                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">Edit</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -138,40 +136,44 @@
             </ul>
         </div>
 
-        <main class="py-4 content">
+        <main class="content">
         @else
-        <main class="py-4">
+        <main>
         @endauth
-
-            @if($errors->any())
-                <div class="pt-3">
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $item)
-                            <li>{{ $item }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+        @if($errors->any())
+            <div class="pt-3">
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $item)
+                        <li>{{ $item }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-            @endif
-
-            @if(Session::has('success'))
-                <div class="pt-3">
-                    <div class="alert alert-success">
-                        {{ Session::get('success') }}
-                    </div>
+            </div>
+            
+        @if(Session::has('success'))
+            <div class="pt-3">
+                <div class="alert alert-success">
+                    {{ Session::get('success') }}
                 </div>
-            @endif
+            </div>
+        @endif
 
-            @if(Session::has('warning'))
-                <div class="pt-3">
-                    <div class="alert alert-warning">
-                        {{ Session::get('warning') }}
-                    </div>
+        @if(Session::has('warning'))
+            <div class="pt-3">
+                <div class="alert alert-warning">
+                    {{ Session::get('warning') }}
                 </div>
-            @endif
+            </div>
+        @endif
+                @endif
             @yield('content')
+                <footer class="mt-5 py-4 bg-dark text-white text-center">
+        <p>&copy; 2024 Sevalino Elfata. All rights reserved.</p>
+        {{-- <p>Follow us on <a href="#" class="text-light">Facebook</a>, <a href="#" class="text-light">Twitter</a>, and <a href="#" class="text-light">Instagram</a>.</p> --}}
+    </footer>
         </main>
+            <!-- Footer Section -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -184,3 +186,4 @@
     @yield('script')
 </body>
 </html>
+

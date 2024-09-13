@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
-use App\Models\post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,18 +13,20 @@ class ProfileController extends Controller
     /**
      * Display the specified user's profile.
      *
-     * @param  int  $id
+     * @param  int  $userId
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $userId)
     {
-        // Retrieve the user by ID
-        $user = User::findOrFail($id);
-        $posts = Post::where('user_id', $id)->latest()->paginate(10);
+        $user = User::with('posts')->findOrFail($userId);
+        $pageName = $user->name ."'s Profile";
 
-        // Return the view with user data
-        return view('profile.show', compact('user', 'posts'));
+        $posts = $user->posts()->latest()->paginate(10);
+
+        return view('profile.show', compact('user', 'pageName'))
+            ->with('posts', $posts);
     }
+
     /**
      * Show the edit profile form.
      *
@@ -33,7 +34,9 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        return view('profile.edit', ['user' => Auth::user()]);
+        $user = Auth::user();
+
+        return view('profile.edit', compact('user'));
     }
 
     /**
@@ -54,70 +57,29 @@ class ProfileController extends Controller
             'pfp' => ['nullable', 'file', 'max:102400'],
         ]);
 
-        $this->updateUserInformation($user, $request);
+        $user->fill($request->only('name', 'email', 'bio'));
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
 
         if ($request->hasFile('pfp')) {
-            $media = $this->updateMedia($request);
-            $this->associatePfpWithUser($user, $media);
+            $media = Media::updateOrCreate(
+                ['pfp_id' => Auth::id()],
+                [
+                    'file_type' => $request->file('pfp')->getClientOriginalExtension(),
+                    'file_name' => $request->file('pfp')->getClientOriginalName(),
+                    'file_path' => $request->file('pfp')->store('uploads', 'public'),
+                    'mime_type' => $request->file('pfp')->getMimeType(),
+                    'file_size' => $request->file('pfp')->getSize(),
+                ]
+            );
+            $user->pfp()->associate($media);
         }
 
         $user->save();
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }
-
-    /**
-     * Updates a user's information based on the provided request data.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    private function updateUserInformation(User $user, Request $request)
-    {
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->bio = $request->input('bio');
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-    }
-
-    /**
-     * Updates the user's profile picture in the database and on the storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \App\Models\Media
-     */
-    private function updateMedia(Request $request): Media
-    {
-        $file = $request->file('pfp');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('uploads', $fileName, 'public');
-
-        return Media::updateOrCreate(
-            ['pfp_id' => Auth::id()],
-            [
-                'file_type' => $file->getClientOriginalExtension(),
-                'file_name' => $fileName,
-                'file_path' => '/storage/' . $filePath,
-                'mime_type' => $file->getMimeType(),
-                'file_size' => $file->getSize(),
-            ]
-        );
-    }
-
-    /**
-     * Associates the user with the profile picture.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Media  $media
-     * @return void
-     */
-    private function associatePfpWithUser(User $user, Media $media)
-    {
-        $user->pfp()->associate($media);
-        $user->save();
-    }
 }
+
