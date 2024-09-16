@@ -28,7 +28,7 @@
                         @foreach($post->media as $media)
                             @if(Str::startsWith($media->mime_type, 'image/'))
                                 <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                    <img src="{{ $media->file_path }}" alt="{{ $media->file_name }}" class="d-block w-100" style="max-height: 400px; width: 100%; height: auto;">
+                                    <img src="{{ $media->file_path }}" alt="{{ $media->file_name }}" class="d-block w-auto h-100 mx-auto" style="max-height: 400px; max-width: 100%;">
                                 </div>
                             @endif
                         @endforeach

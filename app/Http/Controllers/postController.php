@@ -36,6 +36,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'nullable|string',
@@ -51,14 +52,14 @@ class PostController extends Controller
 
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                $filename = time() . '_' . $file->getClientOriginalName();
+                $filename = time().'_'.$file->getClientOriginalName();
                 $filePath = $file->storeAs('uploads', $filename, 'public');
 
                 Media::create([
                     'post_id' => $post->id,
                     'file_type' => $file->getClientOriginalExtension(),
                     'file_name' => $filename,
-                    'file_path' => '/storage/' . $filePath,
+                    'file_path' => '/storage/'.$filePath,
                     'mime_type' => $file->getMimeType(),
                     'file_size' => $file->getSize(),
                 ]);
@@ -66,6 +67,7 @@ class PostController extends Controller
         }
 
         return redirect()->route('post.index')->with('success', 'Post created successfully');
+
     }
 
     /**
@@ -102,7 +104,7 @@ class PostController extends Controller
 
         if ($request->hasFile('media')) {
             $file = $request->file('media');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time().'_'.$file->getClientOriginalName();
             $filePath = $file->storeAs('uploads', $filename, 'public');
 
             if ($post->media) {
@@ -114,7 +116,7 @@ class PostController extends Controller
                 'post_id' => $post->id,
                 'file_type' => $file->getMimeType(),
                 'file_name' => $filename,
-                'file_path' => '/storage/' . $filePath,
+                'file_path' => '/storage/'.$filePath,
                 'mime_type' => $file->getMimeType(),
                 'file_size' => $file->getSize(),
             ]);
@@ -134,8 +136,8 @@ class PostController extends Controller
 
         $post = Post::with('author', 'media')->findOrFail($postId);
 
-        if (!$this->canDeletePost($post)) {
-            throw new AuthorizationException();
+        if (! $this->canDeletePost($post)) {
+            throw new AuthorizationException;
         }
 
         $this->deletePostMedia($post);
@@ -147,7 +149,7 @@ class PostController extends Controller
     /**
      * Determines if the current authenticated user can delete the given post.
      *
-     * @param Post $post The post to check deletion permissions for.
+     * @param  Post  $post  The post to check deletion permissions for.
      * @return bool True if the user can delete the post, false otherwise.
      */
     private function canDeletePost(Post $post): bool
@@ -158,8 +160,7 @@ class PostController extends Controller
     /**
      * Deletes the media associated with a given post.
      *
-     * @param Post $post The post whose media is to be deleted.
-     * @return void
+     * @param  Post  $post  The post whose media is to be deleted.
      */
     private function deletePostMedia(Post $post): void
     {
@@ -171,4 +172,3 @@ class PostController extends Controller
         }
     }
 }
-

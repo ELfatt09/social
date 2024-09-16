@@ -88,7 +88,6 @@
         </div>
     </section>
 
-    <!-- Sign Up Section -->
     <section id="team" class="py-5 bg-light">
         <div class="container text-center">
             <h2 class="mb-5">About the Developer</h2>
