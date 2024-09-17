@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\comment;
 use App\Models\Media;
 use App\Models\Post;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -16,7 +17,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('author', 'media')
+        $posts = Post::with('author', 'media', 'comment')
             ->latest()
             ->paginate(10);
 
@@ -52,17 +53,7 @@ class PostController extends Controller
 
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                $filename = time().'_'.$file->getClientOriginalName();
-                $filePath = $file->storeAs('uploads', $filename, 'public');
-
-                Media::create([
-                    'post_id' => $post->id,
-                    'file_type' => $file->getClientOriginalExtension(),
-                    'file_name' => $filename,
-                    'file_path' => '/storage/'.$filePath,
-                    'mime_type' => $file->getMimeType(),
-                    'file_size' => $file->getSize(),
-                ]);
+                mediaController::store($file, 'post_id', $post->id);
             }
         }
 
@@ -166,7 +157,7 @@ class PostController extends Controller
     {
         if ($post->media) {
             foreach ($post->media as $media) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $media->file_path));
+                mediaController::delete($media);
             }
             $post->media()->delete();
         }

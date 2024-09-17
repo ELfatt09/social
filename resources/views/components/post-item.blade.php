@@ -13,7 +13,7 @@
         </div>
     </div>
     <h2 class="font-weight-bold mb-3">{{ $post->title }}</h2>
-    <p class="text-justify mb-4">{{ $post->body }}</p>
+    <p class="text-justify mb-4"><x-linkify-content :content="$post->body" /></p>
     @if($post->media->count() > 0)
         <div class="container-fluid p-3 mb-4">
             @if($post->media->count() == 1)
@@ -23,7 +23,7 @@
                     @endif
                 @endforeach
             @else
-                <div id="media-carousel-{{ $post->id }}" class="carousel slide" data-bs-ride="carousel">
+                <div id="media-carousel-{{ $post->id }}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
                     <div class="carousel-inner bg-secondary d-flex flex-row flex-wrap justify-content-between align-items-center" style="height: 400px;">
                         @foreach($post->media as $media)
                             @if(Str::startsWith($media->mime_type, 'image/'))

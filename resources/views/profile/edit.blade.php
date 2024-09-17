@@ -35,7 +35,7 @@
 
                             <!-- Form Fields Section -->
                             <div class="mb-4">
-                                @foreach(['name', 'bio', 'email', 'password', 'password_confirmation'] as $field)
+                                @foreach(['name', 'bio'] as $field)
                                     <div class="mb-3">
                                         <label for="{{ $field }}" class="form-label">{{ __("{$field}") }}</label>
                                         @if($field === 'email')

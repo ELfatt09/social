@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Media;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,37 +46,22 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $user = User::find(Auth::id());
-
+        $user = User::findOrFail(Auth::id());
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['nullable', 'confirmed', 'min:6'],
             'bio' => ['nullable', 'string', 'max:600'],
             'pfp' => ['nullable', 'file', 'max:102400'],
         ]);
 
-        $user->fill($request->only('name', 'email', 'bio'));
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
+        $user->update([
+            'name' => $request->name,
+            'bio' => $request->bio,
+        ]);
 
         if ($request->hasFile('pfp')) {
-            $media = Media::updateOrCreate(
-                ['pfp_id' => Auth::id()],
-                [
-                    'file_type' => $request->file('pfp')->getClientOriginalExtension(),
-                    'file_name' => $request->file('pfp')->getClientOriginalName(),
-                    'file_path' => $request->file('pfp')->store('uploads', 'public'),
-                    'mime_type' => $request->file('pfp')->getMimeType(),
-                    'file_size' => $request->file('pfp')->getSize(),
-                ]
-            );
-            $user->pfp()->associate($media);
+            $pfpUpdate = mediaController::update($request->file('pfp'), 'pfp_id', Auth::id());
+            $user->pfp()->associate($pfpUpdate);
         }
-
-        $user->save();
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }

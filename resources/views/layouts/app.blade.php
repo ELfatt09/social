@@ -119,7 +119,7 @@
         </nav>
 
         @auth
-        <div id="sidebar" class="bg-dark text-light">
+        <div id="sidebar" class="bg-dark text-light sticky-start">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li>
                     <a href="{{ url('/post')}}" class="nav-link text-light">
