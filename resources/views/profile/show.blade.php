@@ -38,7 +38,7 @@
                 
                 <div class="container" style="max-width: 480px; margin: 0 auto;">
                     @foreach($posts as $post)
-                        @component('components.post-item', ['post' => $post])
+                        @component('components.post-item', ['posts' => true, 'post' => $post, 'commentDropdown' => false])
                         @endcomponent
                     @endforeach
                     <div class="mt-4">

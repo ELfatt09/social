@@ -21,7 +21,7 @@ class PostController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('post.index', compact('posts'));
+        return view('post.index', compact('posts'))->with(['pageName'=>'All Post']);
     }
 
     /**
@@ -29,7 +29,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('post.create');
+        return view('post.create')->with(['pageName'=>'Create New Post']);
     }
 
     /**
@@ -42,7 +42,7 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'body' => 'nullable|string',
             'media' => 'nullable|array',
-            'media.*' => 'nullable|file|mimetypes:image/jpeg,image/png,image/gif,video/mp4,video/avi,video/mpeg,video/quicktime|max:102400',
+            'media.*' => 'nullable|file|mimetypes:image/jpeg,image/png,image/gif,video/mp4,video/avi,video/mpeg,video/quicktime, audio/mp3|max:102400',
         ]);
 
         $post = Post::create([
@@ -64,9 +64,11 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        return view('post.show', compact('post'));
+        $post = Post::with('author', 'media', 'comment')->findOrFail($id);
+
+        return view('post.show', compact('post'))->with(['pageName'=>$post->title]);;
     }
 
     /**

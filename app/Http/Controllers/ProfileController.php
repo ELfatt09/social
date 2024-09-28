@@ -35,7 +35,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        return view('profile.edit', compact('user'));
+        return view('profile.edit', compact('user'))->with(['pageName'=>'Edit Profile']);
     }
 
     /**

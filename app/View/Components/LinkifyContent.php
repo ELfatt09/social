@@ -19,13 +19,16 @@ class LinkifyContent extends Component
     }
 
     /**
-     * Fungsi untuk mengubah URL menjadi link aktif.
+     * Transform URLs into clickable links.
      */
-    public function makeLinks($text)
+    protected function makeLinks($text)
     {
-        $url_pattern = '/(http:\/\/|https:\/\/)([a-z0-9\_\-]+\.[a-z0-9\_\-]+\.[a-z0-9\_\-]+(?:\/[^\s]*)?)/i';
-
-        return preg_replace($url_pattern, '<a href="$1$2" target="_blank" class="text-decoration-none text-primary">$1$2</a>', $text);
+        $urlPattern = '~(https?://[a-zA-Z0-9\/\-]+(?:\.[a-zA-Z0-9\/\-]+)*(?:\/[a-zA-Z0-9\/\-._]+)*(?:\?[a-zA-Z0-9\/\-&=]+)?(?:#[a-zA-Z0-9\/\-._]+)?)~';
+        return preg_replace(
+            $urlPattern,
+            '<a href="$0" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-primary">$0</a>',
+            $text
+        );
     }
 
     /**
@@ -36,3 +39,4 @@ class LinkifyContent extends Component
         return view('components.linkify-content');
     }
 }
+

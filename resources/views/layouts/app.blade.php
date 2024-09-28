@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $pageName ?? config('app.name', 'Laravel') }}</title>
 
@@ -24,7 +23,6 @@
             box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
             width: 280px;
             transition: left .3s ease-in-out;
-            background-color: #343a40;
         }
 
         #sidebar.active {
@@ -56,6 +54,8 @@
         .content {
             margin-left: 280px;
             transition: margin-left .3s ease-in-out;
+            padding: 20px;
+            min-height: 95vh;
         }
 
         @media (max-width: 768px) {
@@ -69,6 +69,7 @@
 
             .content {
                 margin-left: 0;
+                padding: 20px;
             }
         }
     </style>
@@ -76,9 +77,9 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand navbar-dark bg-dark shadow-sm sticky-top">
+        <nav class="navbar navbar-expand navbar-dark bg-primary text-light shadow-sm sticky-top">
             <div class="container">
-                <button id="sidebar-toggle" class="btn btn-dark">
+                <button id="sidebar-toggle" class="btn btn-primary">
                     <span class="material-icons">menu</span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -138,19 +139,9 @@
 
         <main class="content">
         @else
-        <main>
+        <main style="min-height: 95vh;">
         @endauth
-        @if($errors->any())
-            <div class="pt-3">
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $item)
-                        <li>{{ $item }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-            
+
         @if(Session::has('success'))
             <div class="pt-3">
                 <div class="alert alert-success">
@@ -166,14 +157,27 @@
                 </div>
             </div>
         @endif
-                @endif
+
+        @if ($errors->any())
+            <div class="pt-3">
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
             @yield('content')
-                <footer class="mt-5 py-4 bg-dark text-white text-center">
-        <p>&copy; 2024 Sevalino Elfata. All rights reserved.</p>
-        {{-- <p>Follow us on <a href="#" class="text-light">Facebook</a>, <a href="#" class="text-light">Twitter</a>, and <a href="#" class="text-light">Instagram</a>.</p> --}}
-    </footer>
+
         </main>
             <!-- Footer Section -->
+            <footer class="mt-5 py-4 bg-dark text-white text-center">
+                <p>&copy; 2024 Sevalino Elfata. All rights reserved.</p>
+                {{-- <p>Follow us on <a href="#" class="text-light">Facebook</a>, <a href="#" class="text-light">Twitter</a>, and <a href="#" class="text-light">Instagram</a>.</p> --}}
+            </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

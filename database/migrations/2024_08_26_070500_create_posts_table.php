@@ -18,13 +18,16 @@ return new class extends Migration
             $table->longText('body')->nullable();
             $table->timestamps();
         });
+
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
             $table->longText('body');
+            $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');
             $table->timestamps();
         });
+
         Schema::create('medias', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->nullable()->constrained('posts')->onDelete('cascade');
@@ -34,6 +37,14 @@ return new class extends Migration
             $table->string('file_path'); // path to the uploaded file
             $table->string('mime_type'); // MIME type of the file (e.g., image/jpeg, video/mp4)
             $table->unsignedInteger('file_size'); // file size in bytes
+            $table->timestamps();
+        });
+
+        Schema::create('responses', function (Blueprint $table){
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
+            $table->enum('action', ['upvote', 'downvote', 'star', 'save'])->nullable();
             $table->timestamps();
         });
     }
@@ -46,5 +57,6 @@ return new class extends Migration
         Schema::dropIfExists('posts');
         Schema::dropIfExists('comments');
         Schema::dropIfExists('medias');
+        Schema::dropIfExists('responses');
     }
 };

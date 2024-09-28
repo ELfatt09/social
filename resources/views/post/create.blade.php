@@ -15,12 +15,14 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="body" class="text-dark">Isi:</label>
-                                <textarea name="body" id="body" class="form-control bg-light border border-dark p-3 rounded-lg text-dark"></textarea>
+                                <textarea name="body" id="body" class="form-control bg-light border border-dark p-3 rounded-lg text-dark" rows="5"></textarea>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="media" class="text-dark">Unggah Media:</label>
                                 <input type="file" name="media[]" id="media" accept="image/*,video/*" multiple class="form-control bg-light border border-dark p-3 rounded-lg text-dark">
-                                <div id="media-preview" class="mt-3 grid grid-cols-2 gap-2"></div>
+                            </div>
+                            <div class="preview-container">
+                                <div class="preview" id="media-preview"></div>
                             </div>
                             <button type="submit" class="btn btn-primary bg-dark text-light p-3 rounded-lg border-0">Buat Post</button>
                         </form>
@@ -31,59 +33,65 @@
     </div>
 
     <script>
-       mediaInput.addEventListener('change', (e) => {
-    const files = Array.from(mediaInput.files);
-    mediaPreview.innerHTML = '';
+        const mediaInput = document.getElementById('media');
+        const mediaPreview = document.getElementById('media-preview');
 
-    files.forEach((file) => {
-        const reader = new FileReader();
+        mediaInput.addEventListener('change', (e) => {
+            const files = Array.from(mediaInput.files);
+            mediaPreview.innerHTML = '';
 
-        reader.onload = (e) => {
-            const fileType = file.type;
-            const fileUrl = e.target.result;
+            files.forEach((file) => {
+                const reader = new FileReader();
 
-            if (fileType.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = fileUrl;
-                img.alt = file.name;
-                img.classList.add('img-thumbnail', 'img-fluid', 'media-preview-item');
-                mediaPreview.appendChild(img);
-            } else if (fileType.startsWith('video/')) {
-                const video = document.createElement('video');
-                video.src = fileUrl;
-                video.alt = file.name;
-                video.classList.add('media-preview-item');
-                video.controls = true;
-                mediaPreview.appendChild(video);
-            }
-        };
+                reader.onload = (e) => {
+                    const fileType = file.type;
+                    const fileUrl = e.target.result;
 
-        reader.readAsDataURL(file);
-    });
-});
+                    if (fileType.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.src = fileUrl;
+                        img.alt = file.name;
+                        img.classList.add('img-thumbnail', 'img-fluid', 'media-preview-item', 'rounded-lg', 'shadow-md', 'hover:scale-110');
+                        mediaPreview.appendChild(img);
+                    } else if (fileType.startsWith('video/')) {
+                        const video = document.createElement('video');
+                        video.src = fileUrl;
+                        video.alt = file.name;
+                        video.classList.add('media-preview-item', 'rounded-lg', 'shadow-md', 'hover:scale-110');
+                        video.controls = true;
+                        mediaPreview.appendChild(video);
+                    }
+                };
+
+                reader.readAsDataURL(file);
+            });
+        });
     </script>
 
     <style>
-        .media-preview {
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .preview {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             grid-gap: 10px;
         }
 
         .media-preview-item {
-            border: 1px solid #ddd;
-            padding: 3px;
+            width: auto;
+            height: 150px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            height: 60px;
-            width: auto;
+            transition: transform 0.2s ease-in-out;
         }
 
         .media-preview-item:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            height: 70px;
-            width: auto;
         }
     </style>
 @endsection
+
