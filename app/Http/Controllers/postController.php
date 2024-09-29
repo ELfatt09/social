@@ -39,10 +39,10 @@ class PostController extends Controller
     {
 
         $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'nullable|string',
+            'title' => 'required|string|max:100',
+            'body' => 'nullable|string|max:1000',
             'media' => 'nullable|array',
-            'media.*' => 'nullable|file|mimetypes:image/jpeg,image/png,image/gif,video/mp4,video/avi,video/mpeg,video/quicktime, audio/mp3|max:102400',
+            'media.*' => 'nullable|file|mimetypes:image/jpeg,image/png,image/gif,video/mp4,video/avi,video/mpeg,video/quicktime|max:102400',
         ]);
 
         $post = Post::create([

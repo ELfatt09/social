@@ -94,7 +94,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-6 text-center">
                     <div class="team-member shadow-sm p-3 rounded">
-                        <img src="{{ url('/storage/uploads/1726103097_yuta.jpg') }}" width="150" height="150" class="rounded-circle mb-3" alt="Your Name">
+                        <img src="{{ url('/dashboard/yuta.jpg') }}" width="150" height="150" class="rounded-circle mb-3" alt="Your Name">
                         <h5>Sevalino Elfata</h5>
                         <p>Lead Developer and Creator</p>
                         <p>Passionate about building innovative solutions and creating engaging user experiences. GREDIA is a personal project aimed at revolutionizing social connections.</p>

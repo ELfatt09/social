@@ -1,12 +1,34 @@
 <div class="post-item bg-white rounded-4 shadow-sm p-4 mb-4">
     <div class="d-flex align-items-center mb-4">
-        <div class="author-info d-flex align-items-center mr-3">
-            <a href="{{ route('profile.show', $post->author->id) }}" class="text-dark" style="text-decoration: none">
-                <img src="{{ $post->author->pfp ? asset($post->author->pfp->file_path) : asset('storage/uploads/OIP (1).jpg') }}" alt="{{ $post->author->name }}" class="rounded-circle" style="width: 40px; height: 40px;">
-            </a>
-            <div class="ml-2">
-                <p class="text-dark font-weight-bold mb-0">{{ $post->author->name }}</p>
-                <p class="text-muted mb-0">{{ $post->created_at->diffForHumans() }}</p>
+        <div class="row">
+            <div class="col-9 author-info d-flex align-items-center mr-3">
+                <a href="{{ route('profile.show', $post->author->id) }}" class="text-dark" style="text-decoration: none">
+                    <img src="{{ $post->author->pfp ? asset($post->author->pfp->file_path) : asset('storage/uploads/OIP (1).jpg') }}" alt="{{ $post->author->name }}" class="rounded-circle" style="width: 40px; height: 40px;">
+                </a>
+                    <div class="ml-2">
+                        <p class="text-dark font-weight-bold mb-0">{{ $post->author->name }}</p>
+                        <p class="text-muted mb-0">{{ $post->created_at->diffForHumans() }}</p>
+                    </div>
+            </div>
+            <div class="col-3 text-center">
+                @if (Auth::user()->isFollowing($post->author->id))
+                    <form method="POST" action="{{ route('profile.unfollow') }}" class="d-inline">
+                        @method('DELETE')
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $post->author->id }}">
+                        <button type="submit" class="btn btn-primary">
+                            {{ __('Unfollow') }}
+                        </button>
+                    </form>
+                @else
+                    <form method="POST" action="{{ route('profile.follow') }}" class="d-inline">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $post->author->id }}">
+                        <button type="submit" class="btn btn-primary">
+                            {{ __('Follow') }}
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
     </div>
@@ -17,6 +39,11 @@
                 @foreach($post->media as $media)
                     @if(Str::startsWith($media->mime_type, 'image/'))
                         <img src="{{ $media->file_path }}" alt="{{ $media->file_name }}" class="img-thumbnail d-block w-100">
+                    @elseif(Str::startsWith($media->mime_type, 'video/'))
+                        <video controls class="d-block w-100">
+                            <source src="{{ $media->file_path }}" type="{{ $media->mime_type }}">
+                            Your browser does not support the video tag.
+                        </video>
                     @endif
                 @endforeach
             @else
@@ -26,6 +53,13 @@
                             @if(Str::startsWith($media->mime_type, 'image/'))
                                 <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                                     <img src="{{ $media->file_path }}" alt="{{ $media->file_name }}" class="d-block w-auto h-100 mx-auto" style="max-height: 400px; max-width: 100%;">
+                                </div>
+                            @elseif(Str::startsWith($media->mime_type, 'video/'))
+                                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                    <video controls class="d-block w-auto h-100 mx-auto" style="max-height: 400px; max-width: 100%;">
+                                        <source src="{{ $media->file_path }}" type="{{ $media->mime_type }}">
+                                        Your browser does not support the video tag.
+                                    </video>
                                 </div>
                             @endif
                         @endforeach
