@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\comment;
 use App\Models\Media;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +23,35 @@ class PostController extends Controller
 
         return view('post.index', compact('posts'))->with(['pageName'=>'All Post']);
     }
+    public function followed()
+    {
+        $user = User::find(Auth::id());
 
+        $posts = Post::with('author', 'media', 'comment')
+            ->latest()
+            ->whereHas('author.followers', function ($query) use ($user) {
+                $query->where('follows.follower_id', $user->id);
+            })
+            ->paginate(10);
+
+        return view('post.index', compact('posts'))->with(['pageName' => 'Followed Post']);
+    }
+    public function friend()
+    {
+        $user = User::find(Auth::id());
+
+        $posts = Post::with('author', 'media', 'comment')
+            ->latest()
+            ->whereHas('author.followers', function ($query) use ($user) {
+                $query->where('follows.follower_id', $user->id);
+            })
+            ->whereHas('author.following', function ($query) use ($user) {
+                $query->where('follows.following_id', $user->id);
+            })
+            ->paginate(10);
+
+        return view('post.index', compact('posts'))->with(['pageName' => 'Friend Post']);
+    }
     /**
      * Show the form for creating a new resource.
      */

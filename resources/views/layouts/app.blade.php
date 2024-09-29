@@ -123,17 +123,50 @@
         <div id="sidebar" class="bg-dark text-light sticky-start">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li>
-                    <a href="{{ url('/post')}}" class="nav-link text-light">
-                        <i class="material-icons">mms</i>
-                        All Post
+                    <a href="{{ route('post.index')}}" class="nav-link text-light">
+                        <i class="material-icons">public</i>
+                        public
+                    </a>
+                </li>                
+                <li>
+                    <a href="{{ route('post.followed')}}" class="nav-link text-light ">
+                        <i class="material-icons">person</i>
+                        Followed
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/post/create')}}" class="nav-link text-light">
+                    <a href="{{ route('post.friend')}}" class="nav-link text-light ">
+                        <i class="material-icons">groups</i>
+                        Friends
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('post.create')}}" class="nav-link text-light">
                         <i class="material-icons">post_add</i>
                         Create Post
                     </a>
                 </li>
+            </ul>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <h6 class="nav-link">
+                    Followed Profile
+                </h6>
+                @foreach (Auth::user()->following as $followed)
+                    <li class="nav-link">
+                        <div class="d-flex mr-3">
+                            <a class="text-light" style="text-decoration: none" href="{{ route('profile.show', $followed->following->id) }}">
+                                <img src="{{ $followed->following->pfp ? asset($followed->following->pfp->file_path) : asset('storage/uploads/OIP (1).jpg') }}" alt="{{ $followed->following->name }}" class="rounded-circle mr-2" style="object-fit: cover; width: 30px; height: 30px;">
+                            </a>
+                            <div class="flex-grow-1">
+                                <a class="text-light" style="text-decoration: none" href="{{ route('profile.show', $followed->following->id) }}">
+                                    <h6 class="font-weight-bold mb-0">{{ $followed->following->name }}</h6>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                @endforeach
+                
             </ul>
         </div>
 
@@ -191,3 +224,4 @@
 </body>
 </html>
 
+dfore

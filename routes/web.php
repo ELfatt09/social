@@ -27,10 +27,12 @@ Route::middleware(['auth'])->group(function () {
         //follow
         Route::post('/follow', [FollowController::class, 'follow'])->name('profile.follow');
         Route::delete('/unfollow', [FollowController::class, 'unfollow'])->name('profile.unfollow');
-        
+
     //post
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
-    Route::get('/post/create', [PostController::class, 'create']);
+    Route::get('/post/followed', [PostController::class, 'followed'])->name('post.followed');
+    Route::get('/post/friend', [PostController::class, 'friend'])->name('post.friend');
+    Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
     Route::post('/post', [PostController::class, 'store'])->name('post.store');
     Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
     Route::delete('/post/delete', [PostController::class, 'destroy'])->name('post.destroy'); // <--- Added name()
