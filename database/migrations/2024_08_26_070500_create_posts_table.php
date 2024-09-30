@@ -22,7 +22,7 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
+            $table->foreignId('post_id')->nullable()->constrained('posts')->onDelete('cascade');
             $table->longText('body');
             $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');
             $table->timestamps();
@@ -46,6 +46,7 @@ return new class extends Migration
             $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
             $table->enum('action', ['upvote', 'downvote', 'star', 'save'])->nullable();
             $table->timestamps();
+            $table->unique(['user_id', 'post_id', 'action']);
         });
     }
 

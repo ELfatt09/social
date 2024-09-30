@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/post/delete', [PostController::class, 'destroy'])->name('post.destroy'); // <--- Added name()
         //comment
         Route::post('/comment', [CommentController::class, 'store'])->name('post.comment');
+        Route::post('/comment/reply', [CommentController::class, 'reply'])->name('post.comment.reply');
         Route::delete('/comment', [CommentController::class, 'destroy'])->name('post.comment.destroy');
         //response
         Route::post('/response', [ResponseController::class, 'store'])->name('post.response');

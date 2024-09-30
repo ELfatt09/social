@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
-use App\Models\post;
-use Illuminate\Support\Facades\Log;
+use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
     /**
-     * Handle an incoming comment creation request.
-     *
-     * This method validates the comment request input and creates a new comment.
+     * Validate the comment request input and create a new comment or reply.
      * If the comment is created successfully, it redirects the user back to the post page.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -21,23 +19,46 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request body.
-        $validatedData = $request->validate([
-            "post_id" => "required|integer",
-            "comment" => "required|string|max:1000",
-        ]);
+        $this->validateInput($request, 'post_id');
 
-        // Create the comment.
         try {
-            $this->makeComment($validatedData, Auth::id());
+            $comment = $this->createComment($request->all(), Auth::id());
 
-            // Redirect the user back to the post page with a success message.
-            return redirect()->route('post.show', ['id' => $validatedData['post_id']])->with('success', 'Comment created successfully!');
+            return redirect()->route('post.show', ['id' => $comment->post_id])
+                ->with('success', 'Comment created successfully!');
         } catch (\Exception $e) {
-            // Log the exception and return a 500 status code.
             Log::error($e->getMessage());
             return response("Error creating comment.", 500);
         }
+    }
+
+    public function reply(Request $request)
+    {
+        $this->validateInput($request, 'parent_id');
+
+        try {
+            $comment = $this->createComment($request->all(), Auth::id());
+
+            return back()->with('success', 'Reply created successfully!');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response("Error creating comment.", 500);
+        }
+    }
+
+    /**
+     * Validate the comment request input.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $parentKey  The key of the parent comment ID.
+     * @return void
+     */
+    private function validateInput(Request $request, string $parentKey)
+    {
+        $request->validate([
+            $parentKey => 'required|integer',
+            'comment' => 'required|string|max:1000',
+        ]);
     }
 
     /**
@@ -47,22 +68,17 @@ class CommentController extends Controller
      * @param  int  $authorId  The ID of the user who is creating the comment.
      * @return \App\Models\Comment
      */
-    private function makeComment(array $data, int $authorId)
+    private function createComment(array $data, int $authorId)
     {
-        // Add authorization check to ensure the user has permission to create comments on the specified post
-        $post = Post::find($data['post_id']);
-
-        // Sanitize the comment input to prevent XSS attacks
         $commentBody = strip_tags($data['comment']);
 
         return Comment::create([
-            'post_id' => $data['post_id'],
+            'post_id' => $data['post_id'] ?? null,
+            'parent_id' => $data['parent_id'] ?? null,
             'body' => $commentBody,
             'user_id' => $authorId,
         ]);
     }
-
-
 
     public function destroy(Request $request)
     {
