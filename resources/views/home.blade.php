@@ -82,7 +82,7 @@
     <!-- Call to Action Section -->
     <section id="cta" class="py-5 bg-light text-center">
         <div class="container">
-            <h2 class="mb-4">Ready to Get Started?</h2>
+            <h2 class="mb-4">Ready to Get Started??</h2>
             <p>Join GREDIA today and be part of an engaging community.</p>
             <a href="{{ route('register')}}" class="btn btn-primary btn-lg mt-4 cta-btn">Sign Up Now</a>
         </div>
