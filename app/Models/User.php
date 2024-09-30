@@ -61,6 +61,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(post::class, 'user_id', 'id');
     }
+    //  response that by the user
+    public function responses(): HasMany
+    {
+        return $this->hasMany(response::class, 'user_id', 'id');
+    }
 
     // Relation to the users the user is following
     public function following(): HasMany

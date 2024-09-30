@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Post;
 
 class ProfileController extends Controller
 {
@@ -21,9 +22,12 @@ class ProfileController extends Controller
         $pageName = $user->name ."'s Profile";
 
         $posts = $user->posts()->latest()->paginate(10);
+        $saved = $user->responses->where('action', 'save')->pluck('post_id')->toArray();
+        $savedPosts = Post::whereIn('id', $saved)->latest()->paginate(10);
 
         return view('profile.show', compact('user', 'pageName'))
-            ->with('posts', $posts);
+            ->with('posts', $posts)
+            ->with('savedPosts', $savedPosts);
     }
 
     /**

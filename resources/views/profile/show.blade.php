@@ -68,14 +68,32 @@
                             @endif
                         @endauth
                     </div>
-                </div>          
-                <div class="container" style="max-width: 480px; margin: 0 auto;">
-                    @foreach($posts as $post)
-                        @component('components.post-item', ['posts' => true, 'post' => $post, 'commentDropdown' => false])
-                        @endcomponent
-                    @endforeach
-                    <div class="mt-4">
-                        {{ $posts->links('pagination::bootstrap-5') }}
+                </div>
+
+                <nav class="mt-4">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="nav-posts-tab" data-bs-toggle="tab" data-bs-target="#nav-posts" type="button" role="tab" aria-controls="nav-posts" aria-selected="true">Posts</button>
+                        <button class="nav-link" id="nav-saved-tab" data-bs-toggle="tab" data-bs-target="#nav-saved" type="button" role="tab" aria-controls="nav-saved" aria-selected="false">Saved</button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent" style="max-width: 480px; margin: 0 auto;">
+                    <div class="tab-pane fade show active" id="nav-posts" role="tabpanel" aria-labelledby="nav-posts-tab">
+                        @foreach($posts as $post)
+                            @component('components.post-item', ['posts' => true, 'post' => $post, 'commentDropdown' => true])
+                            @endcomponent
+                        @endforeach
+                        <div class="mt-4">
+                            {{ $posts->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-saved" role="tabpanel" aria-labelledby="nav-saved-tab">
+                        @foreach($savedPosts as $post)
+                            @component('components.post-item', ['posts' => true, 'post' => $post, 'commentDropdown' => true])
+                            @endcomponent
+                        @endforeach
+                        <div class="mt-4">
+                            {{ $savedPosts->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,3 +116,4 @@
         }
     </style>
 @endsection
+

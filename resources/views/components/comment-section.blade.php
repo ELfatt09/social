@@ -32,7 +32,7 @@
         </div>
     </form>
     @foreach ($comment->replies as $reply)
-    <div class="card mb-3 pl-3 border-0 shadow-sm">
+    <div class="card mb-3 border-0 shadow-sm" style="margin-left: 10%;">
         <div class="card-body p-2">
             <div class="d-flex">
                 <a class="text-dark" style="text-decoration: none" href="{{ route('profile.show', $reply->author->id) }}">
