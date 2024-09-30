@@ -150,6 +150,27 @@
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <h6 class="nav-link">
+                    Followed Friends
+                </h6>
+                @foreach (Auth::user()->following as $followed)
+                    @if($followed->following->hasFriendshipWith(Auth::id()))
+                    <li class="nav-link">
+                        <div class="d-flex mr-3">
+                            <a class="text-light" style="text-decoration: none" href="{{ route('profile.show', $followed->following->id) }}">
+                                <img src="{{ $followed->following->pfp ? asset($followed->following->pfp->file_path) : asset('storage/uploads/OIP (1).jpg') }}" alt="{{ $followed->following->name }}" class="rounded-circle mr-2" style="object-fit: cover; width: 30px; height: 30px;">
+                            </a>
+                            <div class="flex-grow-1">
+                                <a class="text-light" style="text-decoration: none" href="{{ route('profile.show', $followed->following->id) }}">
+                                    <h6 class="font-weight-bold mb-0">{{ $followed->following->name }}</h6>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    @endif
+                @endforeach                
+            </ul>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <h6 class="nav-link">
                     Followed Profile
                 </h6>
                 @foreach (Auth::user()->following as $followed)

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -37,7 +38,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
@@ -48,25 +49,43 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Relation to the profile picture
     public function pfp(): BelongsTo
     {
         return $this->belongsTo(Media::class, 'id', 'pfp_id');
     }
+
+    // Relation to the posts made by the user
     public function posts(): HasMany
     {
         return $this->hasMany(post::class, 'user_id', 'id');
     }
+
+    // Relation to the users the user is following
     public function following(): HasMany
     {
         return $this->hasMany(follow::class, 'follower_id', 'id');
     }
+
+    // Relation to the users that are following the user
     public function followers(): HasMany
     {
         return $this->hasMany(follow::class, 'following_id', 'id');
     }
+
+    // Check if the user has a friendship with another user
+    public function hasFriendshipWith(int $userId): bool
+    {
+        return $this->following()->where('following_id', $userId)->exists()
+            && $this->followers()->where('follower_id', $userId)->exists();
+    }
+
+    // Check if the user is following another user
     public function isFollowing(int $userId): bool
     {
         return $this->following()->where('following_id', $userId)->exists();
     }
     
 }
+

@@ -41,18 +41,18 @@ class PostController extends Controller
         $user = User::find(Auth::id());
 
         $posts = Post::with('author', 'media', 'comment')
+            ->whereHas('author', function ($query) use ($user) {
+                $query->whereHas('followers', function ($query) use ($user) {
+                    $query->where('follows.follower_id', $user->id);
+                })->whereHas('following', function ($query) use ($user) {
+                    $query->where('follows.following_id', $user->id);
+                });
+            })
             ->latest()
-            ->whereHas('author.followers', function ($query) use ($user) {
-                $query->where('follows.follower_id', $user->id);
-            })
-            ->whereHas('author.following', function ($query) use ($user) {
-                $query->where('follows.following_id', $user->id);
-            })
             ->paginate(10);
 
         return view('post.index', compact('posts'))->with(['pageName' => 'Friend Post']);
-    }
-    /**
+    }    /**
      * Show the form for creating a new resource.
      */
     public function create()

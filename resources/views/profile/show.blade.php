@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-8">
-                                <div class="d-flex align-items-start mb-4">
+                                <div class="d-flex align-items-center mb-4">                                    
                                     <div class="me-4">
                                         <img src="{{ $user->pfp ? asset($user->pfp->file_path) : asset('storage/uploads/OIP (1).jpg') }}" 
                                              class="rounded-circle border border-4 border-light shadow-sm" 
