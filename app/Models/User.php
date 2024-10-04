@@ -59,24 +59,24 @@ class User extends Authenticatable
     // Relation to the posts made by the user
     public function posts(): HasMany
     {
-        return $this->hasMany(post::class, 'user_id', 'id');
+        return $this->hasMany(Post::class, 'user_id', 'id');
     }
     //  response that by the user
     public function responses(): HasMany
     {
-        return $this->hasMany(response::class, 'user_id', 'id');
+        return $this->hasMany(Response::class, 'user_id', 'id');
     }
 
     // Relation to the users the user is following
     public function following(): HasMany
     {
-        return $this->hasMany(follow::class, 'follower_id', 'id');
+        return $this->hasMany(Follow::class, 'follower_id', 'id');
     }
 
     // Relation to the users that are following the user
     public function followers(): HasMany
     {
-        return $this->hasMany(follow::class, 'following_id', 'id');
+        return $this->hasMany(Follow::class, 'following_id', 'id');
     }
 
     // Check if the user has a friendship with another user

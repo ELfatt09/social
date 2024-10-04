@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\post ;
+use App\Models\Post ;
 
-class media extends Model
+class Media extends Model
 {
     use HasFactory;
     protected $table = 'medias';

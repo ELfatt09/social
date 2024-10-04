@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use phpDocumentor\Reflection\Types\This;
 
-class comment extends Model
+class Comment extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -23,10 +22,11 @@ class comment extends Model
     }
     public function author(): BelongsTo
     {
-        return $this->belongsTo(user::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
+
     public function replies(): HasMany
     {
-        return $this->hasMany(comment::class, 'parent_id', 'id');
+        return $this->hasMany(Comment::class, 'parent_id', 'id');
     }
 }

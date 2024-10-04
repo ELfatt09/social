@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\media;
+use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
 
-class mediaController extends Controller
+class MediaController extends Controller
 {
     public static function store($file, $foreignKey, $foreignKeyValue){
         $filename = time().'_'.$file->getClientOriginalName();

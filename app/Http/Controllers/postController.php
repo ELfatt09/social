@@ -81,7 +81,7 @@ class PostController extends Controller
 
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                mediaController::store($file, 'post_id', $post->id);
+                MediaController::store($file, 'post_id', $post->id);
             }
         }
 

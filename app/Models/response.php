@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Post;
 use App\Models\user;
 
-class response extends Model
+class Response extends Model
 {
     use HasFactory;
     protected $table = 'responses';
@@ -24,6 +24,6 @@ class response extends Model
     }
     public function author(): BelongsTo
     {
-        return $this->belongsTo(user::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
